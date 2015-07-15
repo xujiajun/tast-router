@@ -1,0 +1,7 @@
+<phpunit bootstrap="./vendor/autoload.php" colors="true" syntaxCheck="true">
+  <testsuites>
+    <testsuite name="TastRouter">
+      <directory phpVersion="5.4.0" >tests</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
