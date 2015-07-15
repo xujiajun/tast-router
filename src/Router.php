@@ -1,6 +1,8 @@
 <?php
 namespace TastRouter;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
+
 /**
  * Class Router
  * @package TastRouter
@@ -23,14 +25,6 @@ class Router
     public function __construct(RouteCollection $routeCollection)
     {
         $this->routes = $routeCollection;
-    }
-
-    /**
-     * @param array $parameters
-     */
-    public function setParameters(array $parameters)
-    {
-        $this->parameters = $parameters;
     }
 
     /**
@@ -62,14 +56,16 @@ class Router
     {
         $isRegexp = false;
         foreach ($this->routes->all() as $route) {
-            $url = $route->getUrl();
-            if (in_array($requestUrl, (array)$url)) {
-                $route->dispatch();
-                return $route;
-            }
 
             if (!in_array($requestMethod, (array)$route->getMethods())) {
                 continue;
+            }
+
+            $url = $route->getUrl();
+
+            if (in_array($requestUrl, (array)$url)) {
+                $route->dispatch();
+                return $route;
             }
 
             $isRegexp = $this->_PregMatch($url, $requestUrl, $route);
@@ -81,6 +77,8 @@ class Router
             $route->dispatch();
             return $route;
         }
+
+        return null;
     }
 
     /**
@@ -110,15 +108,14 @@ class Router
             array_shift($matcheParams);
 
             if (empty($matcheParams)) {
-                die('404 not found!');
+                throw new Exception('check your parameter!');
             }
 
             $parameters = [];
-
             $pos = 0;
             foreach ($matcheParams as $matcheParam) {
                 if (empty($matcheParam)) {
-                    die('parameter is wrong!');
+                    throw new Exception('check your parameter!');
                 }
                 $parameterName = $requireKeyNames[$pos];
                 $parameters[$parameterName] = $matcheParam[0];
