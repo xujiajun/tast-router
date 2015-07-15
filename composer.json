@@ -1,7 +1,12 @@
 {
   "name": "xujiajun/tast-router",
   "description": "A Simple PHP Router.support REST and reverse routing etc. ",
-  "keywords": ["tast","router","php", "rest"],
+  "keywords": [
+    "tast",
+    "router",
+    "php",
+    "rest"
+  ],
   "homepage": "https://github.com/xujiajun/TastRouter",
   "license": "MIT",
   "authors": [
@@ -13,6 +18,10 @@
   ],
   "require": {
     "php": ">=5.4.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.5.*",
+    "codeclimate/php-test-reporter": "dev-master"
   },
   "autoload": {
     "psr-4": {
