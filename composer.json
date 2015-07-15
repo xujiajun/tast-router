@@ -1,6 +1,7 @@
 {
-  "name": "xujiajun/TastRouter",
-  "description": "A Simple PHP Router.",
+  "name": "xujiajun/tast-router",
+  "description": "A Simple PHP Router.support REST and reverse routing etc. ",
+  "keywords": ["router", "php", "rest"],
   "homepage": "https://github.com/xujiajun/TastRouter",
   "license": "MIT",
   "authors": [
