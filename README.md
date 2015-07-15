@@ -6,6 +6,18 @@ A Simple PHP Router
 * 支持动态参数绑定
 * 支持对参数正则检验
 
+##composer方式获得
+
+```
+{
+    "require":{
+        "xujiajun/tast-router":"dev-master"
+    }
+}
+
+```
+当然也可以直接clone
+
 ## Usage
 
 step1
@@ -43,6 +55,8 @@ $router = new Router($collection);
 $route = $router->matchCurrentRequest();
 
 ```
+
+
 
 
 ## License
