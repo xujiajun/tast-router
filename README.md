@@ -1,4 +1,5 @@
-# TastRouter
+# TastRouter  [![License](https://poser.pugx.org/xujiajun/tast-router/license)](https://packagist.org/packages/xujiajun/tast-router) [![Code Climate](https://codeclimate.com/github/xujiajun/tast-router/badges/gpa.svg)](https://codeclimate.com/github/xujiajun/tast-router)
+
 A Simple PHP Router
 
 * 支持RESTful风格
@@ -60,4 +61,4 @@ $route = $router->matchCurrentRequest();
 
 
 ## License
-MIT Licensed, http://www.opensource.org/licenses/MIT
+[MIT Licensed](http://www.opensource.org/licenses/MIT)
