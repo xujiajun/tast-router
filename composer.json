@@ -1,0 +1,19 @@
+{
+  "name": "xujiajun/TastRouter",
+  "description": "A Simple PHP Router.",
+  "homepage": "https://github.com/xujiajun/TastRouter",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "xujiajun",
+      "email": "me@xujiajun.cn",
+      "homepage": "http://xujiajun.cn"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "TastRouter\\": "src",
+      "TastRouter\\Test\\": "tests/src/TastRouter"
+    }
+  }
+}
