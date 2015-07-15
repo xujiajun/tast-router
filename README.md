@@ -1,4 +1,4 @@
-# TastRouter  [![License](https://poser.pugx.org/xujiajun/tast-router/license)](https://packagist.org/packages/xujiajun/tast-router) [![Code Climate](https://codeclimate.com/github/xujiajun/tast-router/badges/gpa.svg)](https://codeclimate.com/github/xujiajun/tast-router)
+# TastRouter  [![License](https://poser.pugx.org/xujiajun/tast-router/license)](https://packagist.org/packages/xujiajun/tast-router) [![Code Climate](https://codeclimate.com/github/xujiajun/tast-router/badges/gpa.svg)](https://codeclimate.com/github/xujiajun/tast-router) [![Build Status](https://travis-ci.org/xujiajun/tast-router.svg?branch=master)](https://travis-ci.org/xujiajun/tast-router)
 
 A Simple PHP Router
 
