@@ -1,8 +1,6 @@
 <?php
 namespace TastRouter;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
-
 /**
  * Class Router
  * @package TastRouter
@@ -51,7 +49,7 @@ class Router
     /**
      * @param $requestUrl
      * @param string $requestMethod
-     * @return mixed
+     * @return null
      * @throws \Exception
      */
     public function match($requestUrl, $requestMethod = 'GET')
@@ -61,7 +59,7 @@ class Router
         foreach ($this->routes->all() as $route) {
 
             if (strpos($requestUrl, $route->getNamekey(), 0)) {
-                throw new Exception("Don't use route name key as part of your route");
+                throw new \Exception("Don't use route name key as part of your route");
             }
 
             if (!in_array($requestMethod, (array)$route->getMethods())) {
@@ -98,11 +96,12 @@ class Router
      * @param $routeName
      * @param array $parameters
      * @return mixed
+     * @throws \Exception
      */
     public function generate($routeName, array $parameters= [])
     {
         if (empty($this->namedroute[$routeName])) {
-            throw new Exception("No route named $routeName .");
+            throw new \Exception("No route named $routeName .");
         }
 
         $url = $this->namedroute[$routeName]->getUrl();
@@ -123,6 +122,7 @@ class Router
      * @param $requestUrl
      * @param $route
      * @return bool
+     * @throws \Exception
      */
     private function _PregMatch($url, $requestUrl, $route)
     {
@@ -157,7 +157,7 @@ class Router
             $pos = 0;
             foreach ($matcheParams as $matcheParam) {
                 if (empty($matcheParam)) {
-                    throw new Exception('check your parameter!');
+                    throw new \Exception('check your parameter!');
                 }
                 $parameterName = $requireKeyNames[$pos];
                 $parameters[$parameterName] = $matcheParam[0];
