@@ -42,26 +42,40 @@ use TastRouter\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->attachRoute(new Route('/user/do',[
-    '_controller' => 'UserController::doAction',
+$controller = 'TastRouter\\App\\Controllers\\UserController';
+
+//普通用法
+$collection
+->attachRoute(new Route('/user/do',[
+    '_controller' => "$controller::doAction",
     'methods' => 'GET',
 ]));
 
 //使用正则
-$collection->attachRoute(new Route('/user/{name}',[
-    '_controller' => 'UserController::indexAction',
+$collection
+->attachRoute(new Route('/user/{user}',[
+    '_controller' => "$controller::indexAction",
     'methods' => 'GET',
-    'name'=>'\w+',
-    'routeName'=>'user_get',//bind route name
+    'user'=>'\w+',
 //    'id'=>'\d+',
 ]));
 
+//路由名绑定
+$collection
+->attachRoute(new Route('/hello/{hello}',[
+    '_controller' => "$controller::indexAction",
+    'methods' => 'GET',
+    'hello'=>'\w+',
+    'routeName'=>'say_hello',//bind route name
+//    'id'=>'\d+',
+]));
 
 
 $router = new Router($collection);
 $route = $router->matchCurrentRequest();
 
-echo $router->generate('user_get',['user'=>'xujiajun']);// 输出 /user/xujiajun
+//解析路由
+echo $router->generate('say_hello',['hello'=>'xujiajun']);// 输出 /hello/xujiajun
 
 ```
 
