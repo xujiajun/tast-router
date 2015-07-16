@@ -42,9 +42,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $router->match('/foo1', 'GET');
     }
 
-    /**
-     * @expectedException     Exception
-     */
     public function testMissMatchParams()
     {
         $collection = new RouteCollection();
@@ -52,12 +49,10 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $collection->attachRoute($route2);
 
         $router = new Router($collection);
-        $router->match('/foo1/foo1/foo2/foo2', 'GET');
+        $result = $router->match('/foo1/foo1/foo2/foo2', 'GET');
+        $this->assertNull($result);
     }
 
-    /**
-     * @expectedException     Exception
-     */
     public function testMissMatchParam()
     {
         $collection = new RouteCollection();
@@ -65,7 +60,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $collection->attachRoute($route1);
 
         $router = new Router($collection);
-        $router->match('/hello/###', 'GET');
+        $result = $router->match('/hello/###', 'GET');
+        $this->assertNull($result);
     }
 
     public function testMethod()
@@ -110,11 +106,18 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $router->match("/hello/xujiajun", 'GET');
     }
 
+    public function testWhenUrlSomepartSame()
+    {
+        list($route1, $route2, $route3, $route4) = $this->getRoutes();
+        $router = $this->_getRouterByRoute($route2);
+        $router->match("/foo1/xujiajun", 'GET');
+    }
+
     private function _getRouterByRoute($route)
     {
         $collection = new RouteCollection();
         $collection->attachRoute($route);
-        return  new Router($collection);
+        return new Router($collection);
     }
 
     private function getRoutes()
