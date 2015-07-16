@@ -110,7 +110,34 @@ class RouterTest extends PHPUnit_Framework_TestCase
     {
         list($route1, $route2, $route3, $route4) = $this->getRoutes();
         $router = $this->_getRouterByRoute($route2);
+        $result = $router->match("/foo1", 'GET');
+        $this->assertNull($result);
+    }
+
+    public function testGenerate()
+    {
+        list($route1, $route2, $route3, $route4) = $this->getRoutes();
+        $collection = new RouteCollection();
+        $collection->attachRoute($route2);
+        $collection->attachRoute($route4);
+        $router = new Router($collection);
         $router->match("/foo1/xujiajun", 'GET');
+        $url = $router->generate('say_hello', ['xujiajun']);
+        $this->assertEquals($url, '/hello/xujiajun');
+    }
+
+    /**
+     * @expectedException     Exception
+     */
+    public function testFailGenerate()
+    {
+        list($route1, $route2, $route3, $route4) = $this->getRoutes();
+        $collection = new RouteCollection();
+        $collection->attachRoute($route2);
+        $router = new Router($collection);
+        $router->match("/foo1/xujiajun", 'GET');
+        $url = $router->generate('say_hello', ['xujiajun']);
+        $this->assertEquals($url, '/hello/xujiajun');
     }
 
     private function _getRouterByRoute($route)
@@ -143,6 +170,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $route4 = new Route('/hello/{name}', [
             '_controller' => 'TastRouter\\Test\\controllers\\FooController::indexAction',
             'methods' => 'GET',
+            'routeName' => 'say_hello'
         ]);
 
         return [$route1, $route2, $route3, $route4];
