@@ -149,8 +149,8 @@ class Router
             preg_match_all("/^$pattern$/", $requestUrl, $matcheParams);
             array_shift($matcheParams);
 
-            if (empty($matcheParams)) {
-                throw new Exception('check your parameter!');
+            if (empty($matcheParams) || empty($matcheParams[0])) {
+                return false;
             }
 
             $parameters = [];
