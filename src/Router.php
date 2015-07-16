@@ -14,10 +14,12 @@ class Router
      * @var array|RouteCollection
      */
     private $routes = [];
+
+
     /**
-     * @var
+     * @var array
      */
-    private $parameters;
+    private $namedroute = [];
 
     /**
      * @param RouteCollection $routeCollection
@@ -55,13 +57,24 @@ class Router
     public function match($requestUrl, $requestMethod = 'GET')
     {
         $isRegexp = false;
+
         foreach ($this->routes->all() as $route) {
+
+            if (strpos($requestUrl, $route->getNamekey(), 0)) {
+                throw new Exception("Don't use route name key as part of your route");
+            }
 
             if (!in_array($requestMethod, (array)$route->getMethods())) {
                 continue;
             }
 
             $url = $route->getUrl();
+
+            //bind name
+            $name = $route->getName();
+            if (!empty($name)) {
+                $this->namedroute[$name] = $route;
+            }
 
             if (in_array($requestUrl, (array)$url)) {
                 $route->dispatch();
@@ -82,6 +95,30 @@ class Router
     }
 
     /**
+     * @param $routeName
+     * @param array $parameters
+     * @return mixed
+     */
+    public function generate($routeName, array $parameters= [])
+    {
+        if (empty($this->namedroute[$routeName])) {
+            throw new Exception("No route named $routeName .");
+        }
+
+        $url = $this->namedroute[$routeName]->getUrl();
+        preg_match_all('/\/{\w+}\/?/', $url, $matches);
+        $matches = $matches[0];
+
+        if(!empty($matches)){
+            $matches[count($matches) - 1] .= '/';
+            return preg_replace($matches, array_reverse($parameters), $url);
+        }
+
+        return $url;
+
+    }
+
+    /**
      * @param $url
      * @param $requestUrl
      * @param $route
@@ -94,10 +131,15 @@ class Router
         $requireKeyNames = [];
         $configs = $route->getConfig();
         preg_match_all('/{(\w+)}/', $url, $matches);
-
         if (!empty($matches[1])) {
             foreach ($matches[1] as $requireKey) {
-                $pattern = $configs[$requireKey];
+
+                $pattern = $route->getDefaultPattern();
+
+                if (!empty($configs[$requireKey])) {
+                    $pattern = $configs[$requireKey];
+                }
+
                 $replace[] = "($pattern)";
                 $search[] = '{' . $requireKey . '}';
                 $requireKeyNames[] = $requireKey;

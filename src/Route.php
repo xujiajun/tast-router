@@ -11,11 +11,28 @@ class Route
 
     private $parameters = [];
 
+    private $name = null;
+
+    private $nameKey = 'routeName';//路由名的key值
+
+    private $pattern = '\w+';
+
     public function __construct($url, $config)
     {
         $this->url = $url;
         $this->config = $config;
         $this->methods = isset($config['methods']) ? $config['methods'] : array();
+        $this->name = isset($config[$this->nameKey]) ? $config[$this->nameKey] : null;
+    }
+
+    public function getNameKey()
+    {
+        return $this->nameKey;
+    }
+
+    public function getDefaultPattern()
+    {
+        return $this->pattern;
     }
 
     public function getConfig()
@@ -26,6 +43,16 @@ class Route
     public function getUrl()
     {
         return $this->url;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        return $this->name = (String)$name;
     }
 
     public function getMethods()
@@ -47,7 +74,7 @@ class Route
     {
         return $this->parameters[$name];
     }
-    
+
     public function dispatch()
     {
         $action = explode('::', $this->config['_controller']);
