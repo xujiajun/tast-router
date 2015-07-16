@@ -32,6 +32,7 @@ sudo composer install
 
 step2:
 ```
+
 //web/index.php
 
 require __DIR__.'/../vendor/autoload.php';
@@ -42,15 +43,16 @@ use TastRouter\RouteCollection;
 $collection = new RouteCollection();
 
 $collection->attachRoute(new Route('/user/do',[
-    '_controller' => 'TastRouter\\App\\Controllers\\UserController::doAction',
+    '_controller' => 'UserController::doAction',
     'methods' => 'GET',
 ]));
 
 //使用正则
 $collection->attachRoute(new Route('/user/{name}',[
-    '_controller' => 'TastRouter\\App\\Controllers\\UserController::indexAction',
+    '_controller' => 'UserController::indexAction',
     'methods' => 'GET',
     'name'=>'\w+',
+    'routeName'=>'user_get',//bind route name
 //    'id'=>'\d+',
 ]));
 
@@ -58,6 +60,8 @@ $collection->attachRoute(new Route('/user/{name}',[
 
 $router = new Router($collection);
 $route = $router->matchCurrentRequest();
+
+echo $router->generate('user_get',['user'=>'xujiajun']);// 输出 /user/xujiajun
 
 ```
 
