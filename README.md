@@ -7,6 +7,10 @@ A Simple PHP Router
 * 支持动态参数绑定
 * 支持对参数正则检验
 
+##Requirements
+
+  PHP5.4+
+
 ##composer方式获得
 
 ```
