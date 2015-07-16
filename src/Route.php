@@ -40,6 +40,11 @@ class Route
         return $this->config;
     }
 
+    public function setConfig($key,$value)
+    {
+        $this->config[$key] = $value;
+    }
+
     public function getUrl()
     {
         return $this->url;
@@ -78,6 +83,11 @@ class Route
     public function dispatch()
     {
         $action = explode('::', $this->config['_controller']);
+
+        if (count($action) != 2) {
+            throw new \Exception('delimiter is wrong. ');
+        }
+
         $instance = new $action[0];
         call_user_func_array(array($instance, $action[1]), $this->parameters);
     }

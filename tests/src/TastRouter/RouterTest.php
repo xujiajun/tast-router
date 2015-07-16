@@ -140,6 +140,26 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($url, '/hello/xujiajun');
     }
 
+    public function testDispatch()
+    {
+        list($route1) = $this->getRoutes();
+        $route1->dispatch();
+    }
+
+    /**
+     * @expectedException     Exception
+     */
+    public function testWhenMissDispatch()
+    {
+        list($route1) = $this->getRoutes();
+        $route1->setConfig('_controller','TastRouter\\Test\\controllers\\FooController:indexAction');
+        $route1->dispatch();
+    }
+
+    /**
+     * @param $route
+     * @return Router
+     */
     private function _getRouterByRoute($route)
     {
         $collection = new RouteCollection();
@@ -147,6 +167,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
         return new Router($collection);
     }
 
+    /**
+     * @return array
+     */
     private function getRoutes()
     {
         $route1 = new Route('/hello/{name}', [
