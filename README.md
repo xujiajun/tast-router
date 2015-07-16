@@ -43,13 +43,13 @@ use TastRouter\RouteCollection;
 $collection = new RouteCollection();
 
 $collection->attachRoute(new Route('/user/do',[
-    '_controller' => 'TastRouter\\App\\Controllers\\UserController::doAction',
+    '_controller' => 'UserController::doAction',
     'methods' => 'GET',
 ]));
 
 //使用正则
 $collection->attachRoute(new Route('/user/{name}',[
-    '_controller' => 'TastRouter\\App\\Controllers\\UserController::indexAction',
+    '_controller' => 'UserController::indexAction',
     'methods' => 'GET',
     'name'=>'\w+',
     'routeName'=>'user_get',//bind route name
