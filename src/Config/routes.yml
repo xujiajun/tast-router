@@ -1,0 +1,16 @@
+##demo
+get_user:
+      pattern: /user/{user}
+      parameters:
+        _controller: TastRouter\App\Controllers\UserController::doAction
+        methods:  [GET]
+        user: \d+
+        routeName: user_get
+get_user_course:
+      pattern: /user/{user}/course/{course}
+      parameters:
+          _controller: TastRouter\App\Controllers\UserController::indexAction
+          methods:  [GET]
+          user: \d+
+          course: \d+
+          routeName: get_user_course

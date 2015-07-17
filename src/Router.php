@@ -1,6 +1,7 @@
 <?php
 namespace TastRouter;
 
+
 /**
  * Class Router
  * @package TastRouter
@@ -67,7 +68,6 @@ class Router
             }
 
             $url = $route->getUrl();
-
             //bind name
             $name = $route->getName();
             if (!empty($name)) {
@@ -98,7 +98,7 @@ class Router
      * @return mixed
      * @throws \Exception
      */
-    public function generate($routeName, array $parameters= [])
+    public function generate($routeName, array $parameters = [])
     {
         if (empty($this->namedroute[$routeName])) {
             throw new \Exception("No route named $routeName .");
@@ -108,13 +108,38 @@ class Router
         preg_match_all('/\/{\w+}\/?/', $url, $matches);
         $matches = $matches[0];
 
-        if(!empty($matches)){
+        if (!empty($matches)) {
             $matches[count($matches) - 1] .= '/';
             return preg_replace($matches, array_reverse($parameters), $url);
         }
 
         return $url;
 
+    }
+
+    /**
+     * @param array $config
+     * @return Router
+     * @throws \Exception
+     */
+    public static function parseConfig(array $config)
+    {
+        $collection = new RouteCollection();
+
+        foreach ($config as $name => $routeConfig) {
+            if (empty($name)) {
+                throw new \Exception('Check your config file! route name is missing');
+            }
+
+            //优先考虑routeName
+            if (empty($routeConfig['parameters']['routeName'])) {
+                $routeConfig['parameters']['routeName'] = $name;
+            }
+
+            $collection->attachRoute(new Route($routeConfig['pattern'], $routeConfig['parameters']));
+        }
+
+        return new Router($collection);
     }
 
     /**
