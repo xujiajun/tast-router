@@ -6,6 +6,7 @@ A Simple PHP Router
 * 支持反向路由
 * 支持动态参数绑定
 * 支持对参数正则检验
+* 支持Yaml格式的路由配置
 
 ##Requirements
 
@@ -78,9 +79,23 @@ $route = $router->matchCurrentRequest();
 echo $router->generate('say_hello',['hello'=>'xujiajun']);// 输出 /hello/xujiajun
 
 ```
+以上用法太麻烦？
 
+TastRouter也支持Yaml的配置.方便管理你的路由:
 
+```
+//web/index.php
 
+require __DIR__.'/../vendor/autoload.php';
+use TastRouter\Router;
+use Symfony\Component\Yaml\Yaml;
+
+$file = __DIR__.'/../src/Config/routes.yml';
+$array = Yaml::parse(file_get_contents($file));
+$router = Router::parseConfig($array);
+$route = $router->matchCurrentRequest();
+
+```
 
 ## License
 [MIT Licensed](http://www.opensource.org/licenses/MIT)
