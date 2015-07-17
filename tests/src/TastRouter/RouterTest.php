@@ -8,6 +8,7 @@ use TastRouter\RouteCollection;
 use TastRouter\Router;
 use TastRouter\Route;
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class RouterTest
@@ -154,6 +155,29 @@ class RouterTest extends PHPUnit_Framework_TestCase
         list($route1) = $this->getRoutes();
         $route1->setConfig('_controller','TastRouter\\Test\\controllers\\FooController:indexAction');
         $route1->dispatch();
+    }
+
+    /**
+     * @expectedException     Exception
+     */
+    public function testDiffRouteConfigName()
+    {
+        $file = __DIR__.'/configs/test_routes.yml';
+        $array = Yaml::parse(file_get_contents($file));
+        $router = Router::parseConfig($array);
+        $router->match("/foo1/xujiajun", 'GET');
+        $url = $router->generate('say_hello', ['xujiajun']);
+        $this->assertEquals($url, '/hello/xujiajun');
+    }
+
+    public function testRouteConfig()
+    {
+        $file = __DIR__.'/configs/test_routes.yml';
+        $array = Yaml::parse(file_get_contents($file));
+        $router = Router::parseConfig($array);
+        $router->match("/foo1/xujiajun", 'GET');
+        $url = $router->generate('hello_show', ['xujiajun']);
+        $this->assertEquals($url, '/hello/xujiajun');
     }
 
     /**

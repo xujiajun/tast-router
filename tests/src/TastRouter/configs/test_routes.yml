@@ -1,0 +1,8 @@
+##test
+say_hello:
+      pattern: /hello/{user}
+      parameters:
+        _controller: TastRouter\\Test\\controllers\\FooController::indexAction
+        methods:  [GET]
+        user: \d+
+        routeName: hello_show
