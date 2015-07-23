@@ -1,6 +1,11 @@
 <?php
 namespace TastRouter;
 
+/**
+ * Class Route
+ * @package TastRouter
+ * @author xujiajun [github.com/xujiajun]
+ */
 class Route
 {
     private $url;

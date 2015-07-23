@@ -2,6 +2,10 @@
 
 namespace TastRouter;
 
+/**
+ * Class RouteCollection
+ * @package TastRouter
+ */
 class RouteCollection extends \SplObjectStorage
 {
     /**
