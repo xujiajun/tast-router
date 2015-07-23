@@ -1,11 +1,10 @@
 <?php
 namespace TastRouter;
 
-
 /**
  * Class Router
  * @package TastRouter
- * @author xujiajun
+ * @author xujiajun [github.com/xujiajun]
  */
 class Router
 {
@@ -29,6 +28,19 @@ class Router
     }
 
     /**
+     * @return array|RouteCollection
+     */
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
+
+    public function setRoutes(RouteCollection $routes)
+    {
+        $this->routes = $routes;
+    }
+
+    /**
      * @return mixed
      */
     public function matchCurrentRequest()
@@ -44,6 +56,7 @@ class Router
         if (($pos = strpos($requestUrl, '?')) !== false) {
             $requestUrl = substr($requestUrl, 0, $pos);
         }
+
         return $this->match($requestUrl, $requestMethod);
     }
 
@@ -57,6 +70,8 @@ class Router
     {
         $isRegexp = false;
 
+        $this->_bind();
+
         foreach ($this->routes->all() as $route) {
 
             if (strpos($requestUrl, $route->getNamekey(), 0)) {
@@ -68,11 +83,6 @@ class Router
             }
 
             $url = $route->getUrl();
-            //bind name
-            $name = $route->getName();
-            if (!empty($name)) {
-                $this->namedroute[$name] = $route;
-            }
 
             if (in_array($requestUrl, (array)$url)) {
                 $route->dispatch();
@@ -88,7 +98,6 @@ class Router
             $route->dispatch();
             return $route;
         }
-
         return null;
     }
 
@@ -107,14 +116,12 @@ class Router
         $url = $this->namedroute[$routeName]->getUrl();
         preg_match_all('/\/{\w+}\/?/', $url, $matches);
         $matches = $matches[0];
-
         if (!empty($matches)) {
             $matches[count($matches) - 1] .= '/';
             return preg_replace($matches, array_reverse($parameters), $url);
         }
 
         return $url;
-
     }
 
     /**
@@ -140,6 +147,17 @@ class Router
         }
 
         return new Router($collection);
+    }
+
+    //bind name
+    private function _bind()
+    {
+        foreach ($this->routes->all() as $route) {
+            $name = $route->getName();
+            if (!empty($name)) {
+                $this->namedroute[$name] = $route;
+            }
+        }
     }
 
     /**
