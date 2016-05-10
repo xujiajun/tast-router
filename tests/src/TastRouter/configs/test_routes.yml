@@ -2,7 +2,7 @@
 say_hello:
       pattern: /hello/{user}
       parameters:
-        _controller: TastRouter\\Test\\controllers\\FooController::indexAction
+        _controller: TastRouter\Test\Controllers\FooController::indexAction
         methods:  [GET]
-        user: \d+
+        user: \w+
         routeName: hello_show

@@ -1,6 +1,6 @@
 <?php
 
-namespace TastRouter\Test\controllers;
+namespace TastRouter\Test\Controllers;
 
 class FooController
 {

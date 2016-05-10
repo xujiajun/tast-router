@@ -98,7 +98,7 @@ class Router
             $route->dispatch();
             return $route;
         }
-        return null;
+        throw new \Exception("Error Url");
     }
 
     /**
