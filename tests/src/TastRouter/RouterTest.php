@@ -219,26 +219,26 @@ class RouterTest extends PHPUnit_Framework_TestCase
     private function getRoutes()
     {
         $route1 = new Route('/hello/{name}', [
-            '_controller' => 'TastRouter\\Test\\Controllers\\FooController::indexAction',
+            '_controller' => 'TastRouter\Test\Controllers\FooController::indexAction',
             'methods' => 'GET',
             'name' => '\w+'
         ]);
 
         $route2 = new Route('/foo1/{foo1}/foo2/{foo2}', [
-            '_controller' => 'TastRouter\\Test\\Controllers\\FooController::indexAction',
+            '_controller' => 'TastRouter\Test\Controllers\FooController::indexAction',
             'methods' => 'GET',
             'foo1' => '\w+',
             'foo2' => '\d+'
         ]);
 
         $route3 = new Route('/foo1', [
-            '_controller' => 'TastRouter\\Test\\Controllers\\FooController::indexAction',
+            '_controller' => 'TastRouter\Test\Controllers\FooController::indexAction',
             'methods' => 'GET',
             'routeName' => 'foo1Route'
         ]);
 
         $route4 = new Route('/hello/{name}', [
-            '_controller' => 'TastRouter\\Test\\Controllers\\FooController::indexAction',
+            '_controller' => 'TastRouter\Test\Controllers\FooController::indexAction',
             'methods' => 'GET',
             'routeName' => 'say_hello'
         ]);
