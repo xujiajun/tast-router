@@ -22,7 +22,7 @@ class Router
     /**
      * @var null
      */
-    private $parameters = null;
+    private static $parameters = null;
 
     /**
      * @param RouteCollection $routeCollection
@@ -45,9 +45,9 @@ class Router
         $this->routes = $routes;
     }
 
-    public function setParameters($parameters)
+    public static function setParameters($parameters)
     {
-        $this->parameters = $parameters;
+        self::$parameters = $parameters;
     }
 
     /**
@@ -95,7 +95,7 @@ class Router
             $url = $route->getUrl();
 
             if (in_array($requestUrl, (array)$url)) {
-                $route->dispatch($this->parameters);
+                $route->dispatch(self::$parameters);
                 return $route;
             }
 
@@ -105,7 +105,7 @@ class Router
                 continue;
             }
 
-            $route->dispatch($this->parameters);
+            $route->dispatch(self::$parameters);
             return $route;
         }
         throw new \Exception("Error Url");
