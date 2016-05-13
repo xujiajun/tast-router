@@ -85,7 +85,7 @@ class Route
         return $this->parameters[$name];
     }
 
-    public function dispatch()
+    public function dispatch($parameters)
     {
         $action = explode('::', $this->config['_controller']);
 
@@ -93,7 +93,12 @@ class Route
             throw new \Exception('delimiter is wrong. ');
         }
 
-        $instance = new $action[0];
+        if (!class_exists($action[0])) {
+            throw new \Exception('Class {$action[0]} not exists.');
+        }
+
+        $instance = empty($parameters) ? new $action[0] :  new $action[0]($parameters);
+
         call_user_func_array(array($instance, $action[1]), $this->parameters);
     }
 }

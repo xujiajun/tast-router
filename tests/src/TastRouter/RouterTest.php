@@ -166,7 +166,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     public function testDispatch()
     {
         list($route1) = $this->getRoutes();
-        $route1->dispatch();
+        $parameters = null;
+        $route1->dispatch($parameters);
     }
 
     /**
@@ -176,7 +177,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     {
         list($route1) = $this->getRoutes();
         $route1->setConfig('_controller','TastRouter\\Test\\controllers\\FooController:indexAction');
-        $route1->dispatch();
+        $parameters = null;
+        $route1->dispatch($parameters);
     }
 
     /**

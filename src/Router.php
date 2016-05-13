@@ -20,6 +20,11 @@ class Router
     private $namedroute = [];
 
     /**
+     * @var null
+     */
+    private $parameters = null;
+
+    /**
      * @param RouteCollection $routeCollection
      */
     public function __construct(RouteCollection $routeCollection)
@@ -38,6 +43,11 @@ class Router
     public function setRoutes(RouteCollection $routes)
     {
         $this->routes = $routes;
+    }
+
+    public function setParameters($parameters)
+    {
+        $this->parameters = $parameters;
     }
 
     /**
@@ -63,7 +73,7 @@ class Router
     /**
      * @param $requestUrl
      * @param string $requestMethod
-     * @return null
+     * @return mixed
      * @throws \Exception
      */
     public function match($requestUrl, $requestMethod = 'GET')
@@ -85,7 +95,7 @@ class Router
             $url = $route->getUrl();
 
             if (in_array($requestUrl, (array)$url)) {
-                $route->dispatch();
+                $route->dispatch($this->parameters);
                 return $route;
             }
 
@@ -95,7 +105,7 @@ class Router
                 continue;
             }
 
-            $route->dispatch();
+            $route->dispatch($this->parameters);
             return $route;
         }
         throw new \Exception("Error Url");
