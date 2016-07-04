@@ -1,6 +1,9 @@
 <?php
 namespace TastRouter;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Class Route
  * @package TastRouter
@@ -16,11 +19,15 @@ class Route
 
     private $parameters = [];
 
+    private $query = [];
+
     private $name = null;
 
     private $nameKey = 'routeName';//路由名的key值
 
     private $pattern = '\w+';
+
+    private $middleware = null;
 
     public function __construct($url, $config)
     {
@@ -28,6 +35,26 @@ class Route
         $this->config = $config;
         $this->methods = isset($config['methods']) ? $config['methods'] : array();
         $this->name = isset($config[$this->nameKey]) ? $config[$this->nameKey] : null;
+    }
+
+    public function __set($name, $value)
+    {
+        $this->$name = $value;
+    }
+
+    public function __get($name)
+    {
+        return isset($this->$name) ? $this->$name : null;
+    }
+
+    public function __isset($name)
+    {
+        return isset($this->$name);
+    }
+
+    public function __unset($name)
+    {
+        unset($this->name);
     }
 
     public function getNameKey()
@@ -45,7 +72,7 @@ class Route
         return $this->config;
     }
 
-    public function setConfig($key,$value)
+    public function setConfig($key, $value)
     {
         $this->config[$key] = $value;
     }
@@ -63,6 +90,11 @@ class Route
     public function setName($name)
     {
         return $this->name = (String)$name;
+    }
+
+    public function setMiddleware($eventDispatcher, $event)
+    {
+        return $this->middleware = [$eventDispatcher, $event];
     }
 
     public function getMethods()
@@ -93,12 +125,31 @@ class Route
             throw new \Exception('delimiter is wrong. ');
         }
 
-        if (!class_exists($action[0])) {
+        list($bundleName, $module) = explode('@', $action[0]);
+
+        $class = "TastPHP\\{$bundleName}Bundle\Controller\\{$module}Controller";
+        if (!class_exists($class)) {
             throw new \Exception('Class {$action[0]} not exists.');
         }
 
-        $instance = empty($parameters) ? new $action[0] :  new $action[0]($parameters);
+        $request = Request::createFromGlobals();
 
-        call_user_func_array(array($instance, $action[1]), $this->parameters);
+        $request->query = new ParameterBag(array_merge($_GET, $this->parameters,$this->query));
+
+        if (!empty($parameters)) {
+            $parameters['Request'] = $request;
+        }
+
+        $instance = empty($parameters) ? new $class : new $class($parameters);
+
+        $action = $action[1] . "Action";
+
+        if ($this->middleware) {
+            list($eventDispatcher, $event) = $this->middleware;
+            $event->setParameters($parameters);
+            $eventDispatcher->dispatch($event::NAME, $event);
+        }
+
+        return call_user_func(array($instance, $action), $request, $this->parameters);
     }
 }

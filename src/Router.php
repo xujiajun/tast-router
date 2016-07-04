@@ -1,6 +1,8 @@
 <?php
 namespace TastRouter;
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Class Router
  * @package TastRouter
@@ -23,6 +25,13 @@ class Router
      * @var null
      */
     private static $parameters = null;
+
+    /**
+     * @var null
+     */
+    private static $middleware = null;
+
+    private static $webPath = __BASEDIR__ . '/web/';
 
     /**
      * @param RouteCollection $routeCollection
@@ -50,24 +59,28 @@ class Router
         self::$parameters = $parameters;
     }
 
+    public static function setMiddleware($eventDispatcher, $event)
+    {
+        self::$middleware = [$eventDispatcher, $event];
+    }
+
     /**
      * @return mixed
      */
     public function matchCurrentRequest()
     {
-        $requestMethod = (
-            isset($_POST['_method'])
-            && ($_method = strtoupper($_POST['_method']))
-            && in_array($_method, array('PUT', 'DELETE'))
-        ) ? $_method : $_SERVER['REQUEST_METHOD'];
+        $request = Request::createFromGlobals();
+        $requestMethod = $request->getMethod();
+        $pathInfo = $request->getPathInfo();
 
-        $requestUrl = $_SERVER['REQUEST_URI'];
-
-        if (($pos = strpos($requestUrl, '?')) !== false) {
-            $requestUrl = substr($requestUrl, 0, $pos);
+        $webPath = self::$webPath;
+        if (is_file($webPath . $pathInfo) && file_exists($webPath . $pathInfo)) {
+            $content = file_get_contents(__BASEDIR__ . '/web/' . $pathInfo);
+            echo $content;
+            return;
         }
 
-        return $this->match($requestUrl, $requestMethod);
+        return $this->match($pathInfo, $requestMethod);
     }
 
     /**
@@ -95,8 +108,11 @@ class Router
             $url = $route->getUrl();
 
             if (in_array($requestUrl, (array)$url)) {
-                $route->dispatch(self::$parameters);
-                return $route;
+                if (self::$middleware) {
+                    list($eventDispatcher, $event) = self::$middleware;
+                    $route->setMiddleware($eventDispatcher, $event);
+                }
+                return $route->dispatch(self::$parameters);
             }
 
             $isRegexp = $this->_PregMatch($url, $requestUrl, $route);
@@ -105,8 +121,11 @@ class Router
                 continue;
             }
 
-            $route->dispatch(self::$parameters);
-            return $route;
+            if (self::$middleware) {
+                list($eventDispatcher, $event) = self::$middleware;
+                $route->setMiddleware($eventDispatcher, $event);
+            }
+            return $route->dispatch(self::$parameters);
         }
         throw new \Exception("Error Url");
     }
@@ -142,7 +161,6 @@ class Router
     public static function parseConfig(array $config)
     {
         $collection = new RouteCollection();
-
         foreach ($config as $name => $routeConfig) {
             if (empty($name)) {
                 throw new \Exception('Check your config file! route name is missing');
