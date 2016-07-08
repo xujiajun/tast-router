@@ -117,7 +117,24 @@ class Route
         return $this->parameters[$name];
     }
 
-    public function dispatch($parameters)
+    /**
+     * build a moudle class
+     *
+     * @param  class
+     * @return ReflectionClass class
+     */
+    private function buildMoudle($class)
+    {
+        if (!class_exists($class)) {
+            throw new \Exception("Class ".$class." not found !");
+        }
+
+        $reflector = new \ReflectionClass($class);
+
+        return $reflector;
+    }
+
+    public function dispatch($container)
     {
         $action = explode('::', $this->config['_controller']);
 
@@ -128,28 +145,33 @@ class Route
         list($bundleName, $module) = explode('@', $action[0]);
 
         $class = "TastPHP\\{$bundleName}Bundle\Controller\\{$module}Controller";
-        if (!class_exists($class)) {
-            throw new \Exception('Class {$action[0]} not exists.');
+        $reflector = $this -> buildMoudle($class);
+        $action = $action[1] . "Action";
+        if (!$reflector -> hasMethod($action)) {
+            throw new \Exception("Class ".$class." exist ,But the Action ".$action." not found");
         }
 
         $request = Request::createFromGlobals();
-
-        $request->query = new ParameterBag(array_merge($_GET, $this->parameters,$this->query));
-
-        if (!empty($parameters)) {
-            $parameters['Request'] = $request;
+        if (!empty($container)) {
+            $container['Request'] = $request;
         }
-
-        $instance = empty($parameters) ? new $class : new $class($parameters);
-
-        $action = $action[1] . "Action";
 
         if ($this->middleware) {
             list($eventDispatcher, $event) = $this->middleware;
-            $event->setParameters($parameters);
+            $event->setParameters($container);
             $eventDispatcher->dispatch($event::NAME, $event);
         }
 
-        return call_user_func(array($instance, $action), $request, $this->parameters);
+        $instanc = $reflector -> newInstanceArgs(array($container));
+        $method = $reflector -> getmethod($action);
+        $args = [];
+        $parameters = $this->parameters;
+        foreach ($method -> getParameters() as $arg) {
+            $paramName = $arg ->getName();
+            if (isset($parameters[$paramName])) $args[$paramName] = $parameters[$paramName];
+            if (!empty($arg -> getClass()) && $arg -> getClass() -> getName() == 'Symfony\Component\HttpFoundation\Request') $args[$paramName] = $request;
+        }
+
+        return $method -> invokeArgs($instanc, $args);
     }
 }
