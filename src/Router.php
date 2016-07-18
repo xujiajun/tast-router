@@ -112,6 +112,7 @@ class Router
                     list($eventDispatcher, $event) = self::$middleware;
                     $route->setMiddleware($eventDispatcher, $event);
                 }
+                self::$parameters['CurrentRoute'] = $route;
                 return $route->dispatch(self::$parameters);
             }
 
@@ -125,6 +126,7 @@ class Router
                 list($eventDispatcher, $event) = self::$middleware;
                 $route->setMiddleware($eventDispatcher, $event);
             }
+            self::$parameters['CurrentRoute'] = $route;
             return $route->dispatch(self::$parameters);
         }
         throw new \Exception("Error Url");

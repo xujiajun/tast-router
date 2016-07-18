@@ -165,7 +165,6 @@ class Route
 
         if (!empty($container)) {
             $container['Request'] = $request;
-            $container['CurrentRoute'] = self::$instance;
         }
 
         if ($this->middleware) {
