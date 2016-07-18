@@ -29,8 +29,11 @@ class Route
 
     private $middleware = null;
 
+    private static $instance;
+
     public function __construct($url, $config)
     {
+        self::$instance = $this;
         $this->url = $url;
         $this->config = $config;
         $this->methods = isset($config['methods']) ? $config['methods'] : array();
@@ -162,6 +165,7 @@ class Route
 
         if (!empty($container)) {
             $container['Request'] = $request;
+            $container['CurrentRoute'] = self::$instance;
         }
 
         if ($this->middleware) {
