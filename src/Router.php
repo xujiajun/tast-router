@@ -145,11 +145,15 @@ class Router
         }
 
         $url = $this->namedroute[$routeName]->getUrl();
-        preg_match_all('/\/{\w+}\/?/', $url, $matches);
+        preg_match_all('/({\w+})+?/', $url, $matches);
         $matches = $matches[0];
+
         if (!empty($matches)) {
-            $matches[count($matches) - 1] .= '/';
-            return preg_replace($matches, array_reverse($parameters), $url);
+            $matches = array_map(function ($matches) {
+                return '/' . $matches . '/';
+            }, $matches);
+
+            return preg_replace($matches, $parameters, $url);
         }
 
         return $url;
