@@ -2,6 +2,7 @@
 namespace TastRouter;
 
 use Symfony\Component\HttpFoundation\Request;
+use TastPHP\App\Event\HttpEvent;
 
 /**
  * Class Router
@@ -129,7 +130,9 @@ class Router
             self::$parameters['CurrentRoute'] = $route;
             return $route->dispatch(self::$parameters);
         }
-        throw new \Exception("Error Url");
+        $request = Request::createFromGlobals();
+
+        self::$parameters['eventDispatcher']->dispatch('app.notfound', new HttpEvent($request));
     }
 
     /**
