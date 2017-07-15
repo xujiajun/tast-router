@@ -8,11 +8,11 @@ A Simple PHP Router
 * 支持对参数正则检验
 * 支持Yaml格式的路由配置
 
-##Requirements
+## Requirements
 
   PHP5.4+
 
-##composer方式获得
+## composer方式获得
 
 ```
 {
